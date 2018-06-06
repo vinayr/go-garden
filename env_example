@@ -1,0 +1,4 @@
+GIN_MODE=debug
+SERVER_ADDR=:8000
+LOG_FILE=server.log
+JWT_SECRET=secretkey
