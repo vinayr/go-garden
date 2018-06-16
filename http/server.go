@@ -56,6 +56,7 @@ func (s *Server) router() http.Handler {
 
 	admin := r.Group("/admin", authMiddleware.MiddlewareFunc(), middleware.Admin())
 	admin.GET("/users", user.List)
+	admin.GET("/users/:id", user.Show)
 
 	// auth := r.Group("/")
 	// auth.Use(authMiddleware.MiddlewareFunc())
@@ -65,7 +66,7 @@ func (s *Server) router() http.Handler {
 	// }
 	auth := r.Group("/", authMiddleware.MiddlewareFunc())
 	auth.GET("/refresh_token", authMiddleware.RefreshHandler)
-	auth.GET("/users/me", user.Show)
+	auth.GET("/profile", user.Profile)
 
 	return r
 }

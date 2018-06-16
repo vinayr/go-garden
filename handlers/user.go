@@ -3,6 +3,7 @@ package handlers
 import (
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -79,10 +80,27 @@ func (h *UserHandler) List(c *gin.Context) {
 
 // Show an user
 func (h *UserHandler) Show(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		log.Print("Invalid user id")
+		c.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+	user, err := h.UserService.FindUserById(id)
+	if err != nil {
+		log.Print("Show user error: ", err)
+		c.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+	c.JSON(http.StatusOK, user)
+}
+
+// Profile of current user
+func (h *UserHandler) Profile(c *gin.Context) {
 	username := middleware.JWTGetCurrentUser(c)
 	user, err := h.UserService.FindUserByUsername(username)
 	if err != nil {
-		log.Print("Show user error: ", err)
+		log.Print("Profile error: ", err)
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}

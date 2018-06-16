@@ -48,6 +48,16 @@ func (s *UserService) List() ([]User, error) {
 	return users, nil
 }
 
+// FindUserById ...
+func (s *UserService) FindUserById(id int) (*User, error) {
+	user := &User{}
+	err := s.db.Where("id= ?", id).First(&user).Error
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
+}
+
 // FindUserByUsername ...
 func (s *UserService) FindUserByUsername(username string) (*User, error) {
 	user := &User{}
