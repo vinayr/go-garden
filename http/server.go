@@ -57,6 +57,7 @@ func (s *Server) router() http.Handler {
 	admin := r.Group("/admin", authMiddleware.MiddlewareFunc(), middleware.Admin())
 	admin.GET("/users", user.List)
 	admin.GET("/users/:id", user.Show)
+	admin.DELETE("/users/:id", user.Delete)
 
 	// auth := r.Group("/")
 	// auth.Use(authMiddleware.MiddlewareFunc())

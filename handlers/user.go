@@ -78,7 +78,7 @@ func (h *UserHandler) List(c *gin.Context) {
 	c.JSON(http.StatusOK, users)
 }
 
-// Show an user
+// Show user
 func (h *UserHandler) Show(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -86,7 +86,7 @@ func (h *UserHandler) Show(c *gin.Context) {
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}
-	user, err := h.UserService.FindUserById(id)
+	user, err := h.UserService.FindUserByID(id)
 	if err != nil {
 		log.Print("Show user error: ", err)
 		c.AbortWithStatus(http.StatusNotFound)
@@ -105,4 +105,21 @@ func (h *UserHandler) Profile(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, user)
+}
+
+// Delete user
+func (h *UserHandler) Delete(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		log.Print("Invalid user id")
+		c.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+	err = h.UserService.Delete(id)
+	if err != nil {
+		log.Print("Delete user error: ", err)
+		c.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+	c.JSON(200, gin.H{"id": id})
 }

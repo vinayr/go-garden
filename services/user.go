@@ -20,13 +20,12 @@ func NewUserService(db *gorm.DB) *UserService {
 
 // User represents a user in the system
 type User struct {
-	ID           uint       `json:"id"`
-	CreatedAt    time.Time  `json:"createdAt"`
-	UpdatedAt    time.Time  `json:"updatedAt"`
-	DeletedAt    *time.Time `json:"deletedAt,omitempty"`
-	Username     string     `json:"username" gorm:"unique"`
-	PasswordHash string     `json:"-"`
-	IsAdmin      bool       `json:"isAdmin" gorm:"default:false"`
+	ID           uint      `json:"id"`
+	CreatedAt    time.Time `json:"createdAt"`
+	UpdatedAt    time.Time `json:"updatedAt"`
+	Username     string    `json:"username" gorm:"unique"`
+	PasswordHash string    `json:"-"`
+	IsAdmin      bool      `json:"isAdmin" gorm:"default:false"`
 }
 
 // Create a new user
@@ -48,8 +47,8 @@ func (s *UserService) List() ([]User, error) {
 	return users, nil
 }
 
-// FindUserById ...
-func (s *UserService) FindUserById(id int) (*User, error) {
+// FindUserByID ...
+func (s *UserService) FindUserByID(id int) (*User, error) {
 	user := &User{}
 	err := s.db.Where("id= ?", id).First(&user).Error
 	if err != nil {
@@ -75,4 +74,15 @@ func (s *UserService) UserExists(username string) bool {
 		return false
 	}
 	return true
+}
+
+// Delete ...
+func (s *UserService) Delete(id int) error {
+	user := &User{}
+	err := s.db.First(&user, id).Error
+	if err != nil {
+		return err
+	}
+	s.db.Delete(&user)
+	return nil
 }
