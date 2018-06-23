@@ -1,7 +1,10 @@
 package env
 
 import (
+	"log"
+
 	"github.com/caarlos0/env"
+	"github.com/joho/godotenv"
 )
 
 // Config represents environment variables
@@ -22,8 +25,13 @@ func NewConfig() *Config {
 	return &Config{}
 }
 
-// Load parses environment variables
+// Load and parse environment variables
 func (c *Config) Load() error {
+	err := godotenv.Load(".env.dev")
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
 	if err := env.Parse(c); err != nil {
 		return err
 	}

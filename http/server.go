@@ -59,15 +59,10 @@ func (s *Server) router() http.Handler {
 	admin.GET("/users/:id", user.Show)
 	admin.DELETE("/users/:id", user.Delete)
 
-	// auth := r.Group("/")
-	// auth.Use(authMiddleware.MiddlewareFunc())
-	// {
-	// 	auth.GET("/refresh_token", authMiddleware.RefreshHandler)
-	// 	auth.GET("/users/me", user.Show)
-	// }
 	auth := r.Group("/", authMiddleware.MiddlewareFunc())
 	auth.GET("/refresh_token", authMiddleware.RefreshHandler)
 	auth.GET("/profile", user.Profile)
+	auth.PUT("/update", user.Update)
 
 	return r
 }

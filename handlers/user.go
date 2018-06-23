@@ -24,15 +24,20 @@ func NewUserHandler() *UserHandler {
 	return h
 }
 
-// Signup JSON binding
-type Signup struct {
+// SignupData represents JSON input for signup request
+type SignupData struct {
 	Username string `json:"username" binding:"required"`
 	Password string `json:"password" binding:"required"`
 }
 
+// UpdateData represents JSON input for update request
+type UpdateData struct {
+	Username string `json:"username" binding:"required"`
+}
+
 // Signup new user
 func (h *UserHandler) Signup(c *gin.Context) {
-	var params Signup
+	var params SignupData
 	if err := c.BindJSON(&params); err != nil {
 		return
 	}
@@ -78,6 +83,47 @@ func (h *UserHandler) List(c *gin.Context) {
 	c.JSON(http.StatusOK, users)
 }
 
+// Profile of current user
+func (h *UserHandler) Profile(c *gin.Context) {
+	username := middleware.JWTGetCurrentUser(c)
+	user, err := h.UserService.FindUserByUsername(username)
+	if err != nil {
+		log.Print("Profile user not found: ", err)
+		c.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+	c.JSON(http.StatusOK, user)
+}
+
+// Update current user
+func (h *UserHandler) Update(c *gin.Context) {
+	var params UpdateData
+	if err := c.BindJSON(&params); err != nil {
+		log.Print("Update user input error: ", err)
+		c.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+	newUsername := strings.ToLower(params.Username)
+
+	username := middleware.JWTGetCurrentUser(c)
+	user, err := h.UserService.FindUserByUsername(username)
+	if err != nil {
+		log.Print("Update user not found: ", err)
+		c.AbortWithStatus(http.StatusNotFound)
+		return
+	}
+
+	user.Username = newUsername
+	err = h.UserService.Update(user)
+	if err != nil {
+		log.Print("Update user error: ", err)
+		c.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+
+	c.JSON(http.StatusOK, user)
+}
+
 // Show user
 func (h *UserHandler) Show(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
@@ -89,18 +135,6 @@ func (h *UserHandler) Show(c *gin.Context) {
 	user, err := h.UserService.FindUserByID(id)
 	if err != nil {
 		log.Print("Show user error: ", err)
-		c.AbortWithStatus(http.StatusNotFound)
-		return
-	}
-	c.JSON(http.StatusOK, user)
-}
-
-// Profile of current user
-func (h *UserHandler) Profile(c *gin.Context) {
-	username := middleware.JWTGetCurrentUser(c)
-	user, err := h.UserService.FindUserByUsername(username)
-	if err != nil {
-		log.Print("Profile error: ", err)
 		c.AbortWithStatus(http.StatusNotFound)
 		return
 	}

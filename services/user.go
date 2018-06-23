@@ -76,6 +76,15 @@ func (s *UserService) UserExists(username string) bool {
 	return true
 }
 
+// Update ...
+func (s *UserService) Update(user *User) error {
+	err := s.db.Save(user).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 // Delete ...
 func (s *UserService) Delete(id int) error {
 	user := &User{}

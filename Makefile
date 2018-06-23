@@ -8,4 +8,4 @@ clean:
 		@rm -f $(TARGET)
 
 run: build
-		@godotenv -f .env.dev ./$(TARGET)
+		./$(TARGET)

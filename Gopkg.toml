@@ -49,3 +49,7 @@
 [[constraint]]
   branch = "master"
   name = "github.com/gin-contrib/cors"
+
+[[constraint]]
+  name = "github.com/joho/godotenv"
+  version = "1.2.0"
