@@ -17,7 +17,6 @@ func main() {
 
 	// Load configuration
 	if err := m.Config.Load(); err != nil {
-		log.Print("sdfsd")
 		log.Print("LoadConfig error: ", err)
 		os.Exit(1)
 	}

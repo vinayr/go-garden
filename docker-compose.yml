@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  pgdb:
+    image: postgres:alpine
+    env_file: .env.dev
+    ports:
+      - "5432:5432"
+
+  server:
+    image: vinayr/go-garden:latest
+    env_file: .env.dev
+    ports:
+      - "8000:8000"
+    depends_on:
+      - pgdb

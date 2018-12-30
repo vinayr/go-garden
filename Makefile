@@ -1,3 +1,6 @@
+include .env.dev
+export
+
 TARGET	= garden
 LDFLAGS	= -ldflags='-s -w'
 
